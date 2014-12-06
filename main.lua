@@ -8,7 +8,15 @@ function love.load()
 
   bird = {
     x = love.math.random( 100, love.graphics.getWidth() - 100 ),
-    y = love.math.random( 100, love.graphics.getHeight() - 100 )
+    y = love.math.random( 100, love.graphics.getHeight() - 100 ),
+
+    -- Where the bird is facing
+    -- Directions:
+    -- 0 = top
+    -- 1 = right
+    -- 2 = bottom
+    -- 3 = left
+    direction = 0
   }
 
   font = love.graphics.newFont(36)
@@ -35,14 +43,44 @@ function love.update(dt)
     player.y = player.y + (player.speed * dt)
   end
 
-  killBird()
+  birdWatch()
+
+  birdKill()
 end
 
-function killBird()
-  if player.x >= bird.x - 32 and player.x <= bird.x + 32  then
-    if player.y >= bird.y - 32 and player.y <= bird.y + 32  then
+function birdTurn()
+
+end
+
+function birdWatch()
+  if love.keyboard.isDown("up", "right", "down", "left") then
+    -- Looking up
+    if bird.direction == 0 and player.y < bird.y then
       bird.x = 200000
-      player.points = player.points + 1
+    end
+
+    -- Looking right
+    if bird.direction == 1 and player.x > bird.y then
+      bird.x = 200000
+    end
+
+    -- Looking down
+    if bird.direction == 2 and player.y > bird.y then
+      bird.x = 200000
+    end
+
+    -- Looking left
+    if bird.direction == 3 and player.x < bird.y then
+      bird.x = 200000
+    end
+  end
+
+  function birdKill()
+    if player.x >= bird.x - 32 and player.x <= bird.x + 32  then
+      if player.y >= bird.y - 32 and player.y <= bird.y + 32  then
+        bird.x = 200000
+        player.points = player.points + 1
+      end
     end
   end
 end
