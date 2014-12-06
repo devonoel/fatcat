@@ -7,6 +7,12 @@ function love.load()
   }
 
   bird = {
+    sprites = {
+      up = love.graphics.newImage("bird-up.png"),
+      down = love.graphics.newImage("bird-down.png"),
+      left = love.graphics.newImage("bird-left.png"),
+      right = love.graphics.newImage("bird-right.png")
+    },
     x = love.math.random(100, love.graphics.getWidth() - 100),
     y = love.math.random(100, love.graphics.getHeight() - 100),
     time = 0,
@@ -32,10 +38,14 @@ function love.draw()
   love.graphics.rectangle("fill", player.x, player.y, 32, 32)
 
   -- Bird
-  if bird.direction == 0 or bird.direction == 2 then
-    love.graphics.rectangle("fill", bird.x, bird.y, 16, 32)
-  elseif bird.direction == 1 or bird.direction == 3 then
-    love.graphics.rectangle("fill", bird.x, bird.y, 32, 16)
+  if bird.direction == 0 then
+    love.graphics.draw(bird.sprites.up, bird.x, bird.y)
+  elseif bird.direction == 1 then
+    love.graphics.draw(bird.sprites.right, bird.x, bird.y)
+  elseif bird.direction == 2 then
+    love.graphics.draw(bird.sprites.down, bird.x, bird.y)
+  elseif bird.direction == 3 then
+    love.graphics.draw(bird.sprites.left, bird.x, bird.y)
   end
 end
 
@@ -71,41 +81,41 @@ end
 function birdWatch()
   if love.keyboard.isDown("up", "right", "down", "left") then
     -- Looking up
-    if bird.direction == 0 and player.y < bird.y then
+    if bird.direction == 0 and player.y - 50 < bird.y then
       lose()
     end
 
     -- Looking right
-    if bird.direction == 1 and player.x > bird.y then
+    if bird.direction == 1 and player.x + 50 > bird.x then
       lose()
     end
 
     -- Looking down
-    if bird.direction == 2 and player.y > bird.y then
+    if bird.direction == 2 and player.y + 50 > bird.y then
       lose()
     end
 
     -- Looking left
-    if bird.direction == 3 and player.x < bird.y then
+    if bird.direction == 3 and player.x - 50 < bird.x then
       lose()
     end
   end
+end
 
-  function birdKill()
-    if player.x >= bird.x - 32 and player.x <= bird.x + 32  then
-      if player.y >= bird.y - 32 and player.y <= bird.y + 32  then
-        score()
-      end
+function birdKill()
+  if player.x >= bird.x - 32 and player.x <= bird.x + 32  then
+    if player.y >= bird.y - 32 and player.y <= bird.y + 56  then
+      score()
     end
   end
+end
 
-  function score()
-    bird.x = 200000
-    player.points = player.points + 1
-  end
+function score()
+  bird.x = 200000
+  player.points = player.points + 1
+end
 
-  function lose()
-    bird.x = 200000
-    player.points = 0
-  end
+function lose()
+  bird.x = 200000
+  player.points = 0
 end
