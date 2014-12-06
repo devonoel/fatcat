@@ -10,11 +10,14 @@ function love.load()
     x = love.math.random( 100, love.graphics.getWidth() - 100 ),
     y = love.math.random( 100, love.graphics.getHeight() - 100 )
   }
+
+  font = love.graphics.newFont(36)
 end
 
 function love.draw()
+  love.graphics.setFont(font)
   love.graphics.setBackgroundColor(125, 189, 131)
-  love.graphics.print(player.points, 40, 760)
+  love.graphics.print(player.points, 50, 730)
   love.graphics.rectangle("fill", player.x, player.y, 32, 32)
   love.graphics.rectangle("fill", bird.x, bird.y, 16, 32)
 end
