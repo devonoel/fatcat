@@ -13,6 +13,7 @@ function love.load()
 end
 
 function love.draw()
+  love.graphics.setBackgroundColor(125, 189, 131)
   love.graphics.print(player.points, 40, 760)
   love.graphics.rectangle("fill", player.x, player.y, 32, 32)
   love.graphics.rectangle("fill", bird.x, bird.y, 16, 32)
