@@ -8,7 +8,7 @@ function love.load()
 
   bird = {
     x = love.math.random( 100, love.graphics.getWidth() - 100 ),
-    y = love.math.random( 100, love.graphics.getHeight() - 100 ),
+    y = love.math.random( 100, love.graphics.getHeight() - 100 )
   }
 end
 
@@ -29,5 +29,16 @@ function love.update(dt)
     player.y = player.y - (player.speed * dt)
   elseif love.keyboard.isDown("down") then
     player.y = player.y + (player.speed * dt)
+  end
+
+  killBird()
+end
+
+function killBird()
+  if player.x >= bird.x - 32 and player.x <= bird.x + 32  then
+    if player.y >= bird.y - 32 and player.y <= bird.y + 32  then
+      bird.x = 200000
+      player.points = player.points + 1
+    end
   end
 end
