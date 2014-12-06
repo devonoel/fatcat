@@ -6,7 +6,7 @@ function love.load()
   state = 0
 
   player = {
-    points = 0,
+    meals = 0,
     x = 256,
     y = 256,
     speed = 200
@@ -45,36 +45,47 @@ function love.load()
   }
 
   startFont = love.graphics.newFont(64)
-  scoreFont = love.graphics.newFont(36)
+  mealsFont = love.graphics.newFont(36)
+  loseFont = love.graphics.newFont(64)
 end
 
 function love.draw()
-  love.graphics.setFont(scoreFont)
   love.graphics.setBackgroundColor(125, 189, 131)
-  love.graphics.print("Meals: "..player.points, 50, 730)
-
-  -- Player
-  love.graphics.rectangle("fill", player.x, player.y, 32, 32)
-
-  -- Bird
-  if bird.direction == 0 then
-    love.graphics.draw(bird.sprites.up, bird.x, bird.y)
-  elseif bird.direction == 1 then
-    love.graphics.draw(bird.sprites.right, bird.x, bird.y)
-  elseif bird.direction == 2 then
-    love.graphics.draw(bird.sprites.down, bird.x, bird.y)
-  elseif bird.direction == 3 then
-    love.graphics.draw(bird.sprites.left, bird.x, bird.y)
-  end
-
-  if alarm.triggered == true then
-    love.graphics.draw(alarm.sprite, bird.x + 8, bird.y - 40)
-  end
 
   if state == 0 then
     love.graphics.setFont(startFont)
     love.graphics.print("FatCat", love.graphics.getWidth()/3 + 75, love.graphics.getHeight()/2 - 150)
     love.graphics.print("Press Space to Start", love.graphics.getWidth()/4, love.graphics.getHeight()/2 - 50)
+  end
+
+  if state == 1 then
+    love.graphics.setFont(mealsFont)
+    love.graphics.print("Meals: "..player.meals, 50, 730)
+
+    -- Player
+    love.graphics.rectangle("fill", player.x, player.y, 32, 32)
+
+    -- Bird
+    if bird.direction == 0 then
+      love.graphics.draw(bird.sprites.up, bird.x, bird.y)
+    elseif bird.direction == 1 then
+      love.graphics.draw(bird.sprites.right, bird.x, bird.y)
+    elseif bird.direction == 2 then
+      love.graphics.draw(bird.sprites.down, bird.x, bird.y)
+    elseif bird.direction == 3 then
+      love.graphics.draw(bird.sprites.left, bird.x, bird.y)
+    end
+
+    if alarm.triggered == true then
+      love.graphics.draw(alarm.sprite, bird.x + 8, bird.y - 40)
+    end
+  end
+
+  if state == 2 then
+    love.graphics.setFont(startFont)
+    love.graphics.print("No more meals :(", love.graphics.getWidth()/4, love.graphics.getHeight()/2 - 150)
+    love.graphics.print("Total meals: "..player.meals, love.graphics.getWidth()/4, love.graphics.getHeight()/2 - 50)
+    love.graphics.print("Press Space to Restart", love.graphics.getWidth()/4, love.graphics.getHeight()/2 + 50)
   end
 end
 
@@ -97,6 +108,12 @@ function love.update(dt)
     spawned(dt)
 
     alarmed(dt)
+  end
+
+  if state == 2 then
+    if love.keyboard.isDown(" ") then
+      restart()
+    end
   end
 end
 
@@ -159,14 +176,14 @@ function birdKill()
   if player.x >= bird.x - 32 and player.x <= bird.x + 32  then
     if player.y >= bird.y - 32 and player.y <= bird.y + 56  then
       bird.killed = true
-      score()
+      addMeal()
     end
   end
 end
 
-function score()
+function addMeal()
   bird.x = 200000
-  player.points = player.points + 1
+  player.meals = player.meals + 1
   spawn.triggered = true
 end
 
@@ -194,5 +211,18 @@ end
 
 function lose()
   bird.x = 200000
-  player.points = 0
+  state = 2
+end
+
+function restart()
+  player.meals = 0
+  player.speed = 200
+
+  alarm.triggered = false
+  alarm.timer = 0
+
+  bird.x = love.math.random(100, love.graphics.getWidth() - 100)
+  bird.y = love.math.random(100, love.graphics.getHeight() - 100)
+
+  state = 1
 end
