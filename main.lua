@@ -16,6 +16,7 @@ function love.load()
     x = love.math.random(100, love.graphics.getWidth() - 100),
     y = love.math.random(100, love.graphics.getHeight() - 100),
     time = 0,
+    killed = false,
 
     -- Where the bird is facing
     -- Directions:
@@ -24,6 +25,11 @@ function love.load()
     -- 2 = bottom
     -- 3 = left
     direction = 0
+  }
+
+  spawn = {
+    triggered = false,
+    timer = 0
   }
 
   alarm = {
@@ -79,6 +85,8 @@ function love.update(dt)
 
   birdKill()
 
+  spawned(dt)
+
   alarmed(dt)
 end
 
@@ -96,6 +104,10 @@ function birdTurn(dt)
 end
 
 function birdWatch()
+  if bird.killed == true then
+    return
+  end
+
   if love.keyboard.isDown("up", "right", "down", "left") then
     -- Looking up
     if bird.direction == 0 and player.y + 60 < bird.y then
@@ -122,6 +134,7 @@ end
 function birdKill()
   if player.x >= bird.x - 32 and player.x <= bird.x + 32  then
     if player.y >= bird.y - 32 and player.y <= bird.y + 56  then
+      bird.killed = true
       score()
     end
   end
@@ -130,6 +143,20 @@ end
 function score()
   bird.x = 200000
   player.points = player.points + 1
+  spawn.triggered = true
+end
+
+function spawned(dt)
+  if spawn.triggered == true then
+    spawn.timer = spawn.timer + dt
+    if spawn.timer >= 3 then
+      spawn.triggered = false
+      spawn.timer = 0
+      bird.x = love.math.random(100, love.graphics.getWidth() - 100)
+      bird.y = love.math.random(100, love.graphics.getHeight() - 100)
+      bird.killed = false
+    end
+  end
 end
 
 function alarmed(dt)
