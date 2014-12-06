@@ -12,8 +12,9 @@ function love.load()
     speed = 200
   }
 
-  birdCount = 1
+  birdCount = 0
   birds = {}
+  killCountdown = 0
 
   -- bird = {
   --   sprites = {
@@ -198,27 +199,26 @@ end
 function addMeal(i)
   birds[i].x = 200000
   player.meals = player.meals + 1
-  spawn.triggered = true
+  killCountdown = killCountdown + 1
+  if birdCount - killCountdown == 0 then
+    killCountdown = 0
+    spawn.triggered = true
+  end
 end
 
 function spawnTimer(dt)
   if spawn.triggered == true then
     spawn.timer = spawn.timer + dt
     if spawn.timer >= 3 then
-      -- spawn.triggered = false
-      -- spawn.timer = 0
-      -- bird.x = love.math.random(100, love.graphics.getWidth() - 100)
-      -- bird.y = love.math.random(100, love.graphics.getHeight() - 100)
-      -- bird.killed = false
+      spawn.triggered = false
+      spawn.timer = 0
+      birdCount = birdCount + 1
       spawner()
     end
   end
 end
 
 function spawner()
-  spawn.triggered = false
-  spawn.timer = 0
-
   for i=1, birdCount, 1 do
     birds[i] = {
       sprites = {
@@ -263,7 +263,7 @@ function restart(dt)
   alarm.triggered = false
   alarm.timer = 0
 
-  birdCount = 1
+  birdCount = 0
   birds = {}
 
   spawn.triggered = true
