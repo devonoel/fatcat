@@ -1,4 +1,10 @@
 function love.load()
+  -- Game state
+  -- 0 = Start
+  -- 1 = Started
+  -- 2 = Lose
+  state = 0
+
   player = {
     points = 0,
     x = 256,
@@ -38,14 +44,14 @@ function love.load()
     timer = 0
   }
 
-
-  font = love.graphics.newFont(36)
+  startFont = love.graphics.newFont(64)
+  scoreFont = love.graphics.newFont(36)
 end
 
 function love.draw()
-  love.graphics.setFont(font)
+  love.graphics.setFont(scoreFont)
   love.graphics.setBackgroundColor(125, 189, 131)
-  love.graphics.print(player.points, 50, 730)
+  love.graphics.print("Meals: "..player.points, 50, 730)
 
   -- Player
   love.graphics.rectangle("fill", player.x, player.y, 32, 32)
@@ -64,9 +70,37 @@ function love.draw()
   if alarm.triggered == true then
     love.graphics.draw(alarm.sprite, bird.x + 8, bird.y - 40)
   end
+
+  if state == 0 then
+    love.graphics.setFont(startFont)
+    love.graphics.print("FatCat", love.graphics.getWidth()/3 + 75, love.graphics.getHeight()/2 - 150)
+    love.graphics.print("Press Space to Start", love.graphics.getWidth()/4, love.graphics.getHeight()/2 - 50)
+  end
 end
 
 function love.update(dt)
+  if state == 0 then
+    if love.keyboard.isDown(" ") then
+      state = 1
+    end
+  end
+
+  if state == 1 then
+    playerMove(dt)
+
+    birdWatch()
+
+    birdTurn(dt)
+
+    birdKill()
+
+    spawned(dt)
+
+    alarmed(dt)
+  end
+end
+
+function playerMove(dt)
   if love.keyboard.isDown("left") then
     player.x = player.x - (player.speed * dt)
   elseif love.keyboard.isDown("right") then
@@ -78,16 +112,6 @@ function love.update(dt)
   elseif love.keyboard.isDown("down") then
     player.y = player.y + (player.speed * dt)
   end
-
-  birdWatch()
-
-  birdTurn(dt)
-
-  birdKill()
-
-  spawned(dt)
-
-  alarmed(dt)
 end
 
 function birdTurn(dt)
