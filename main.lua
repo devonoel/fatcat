@@ -12,30 +12,33 @@ function love.load()
     speed = 200
   }
 
-  bird = {
-    sprites = {
-      up = love.graphics.newImage("bird-up.png"),
-      down = love.graphics.newImage("bird-down.png"),
-      left = love.graphics.newImage("bird-left.png"),
-      right = love.graphics.newImage("bird-right.png")
-    },
-    x = love.math.random(100, love.graphics.getWidth() - 100),
-    y = love.math.random(100, love.graphics.getHeight() - 100),
-    time = 0,
-    killed = false,
+  birdCount = 1
+  birds = {}
 
-    -- Where the bird is facing
-    -- Directions:
-    -- 0 = top
-    -- 1 = right
-    -- 2 = bottom
-    -- 3 = left
-    direction = 0
-  }
+  -- bird = {
+  --   sprites = {
+  --     up = love.graphics.newImage("bird-up.png"),
+  --     down = love.graphics.newImage("bird-down.png"),
+  --     left = love.graphics.newImage("bird-left.png"),
+  --     right = love.graphics.newImage("bird-right.png")
+  --   },
+  --   x = love.math.random(100, love.graphics.getWidth() - 100),
+  --   y = love.math.random(100, love.graphics.getHeight() - 100),
+  --   time = 0,
+  --   killed = false,
+  --
+  --   -- Where the bird is facing
+  --   -- Directions:
+  --   -- 0 = top
+  --   -- 1 = right
+  --   -- 2 = bottom
+  --   -- 3 = left
+  --   direction = 0
+  -- }
 
   spawn = {
-    triggered = false,
-    timer = 0
+    triggered = true,
+    timer = 3
   }
 
   alarm = {
@@ -65,19 +68,23 @@ function love.draw()
     -- Player
     love.graphics.rectangle("fill", player.x, player.y, 32, 32)
 
-    -- Bird
-    if bird.direction == 0 then
-      love.graphics.draw(bird.sprites.up, bird.x, bird.y)
-    elseif bird.direction == 1 then
-      love.graphics.draw(bird.sprites.right, bird.x, bird.y)
-    elseif bird.direction == 2 then
-      love.graphics.draw(bird.sprites.down, bird.x, bird.y)
-    elseif bird.direction == 3 then
-      love.graphics.draw(bird.sprites.left, bird.x, bird.y)
+    -- Birds
+    for i=1, birdCount, 1 do
+      if birds[i].direction == 0 then
+        love.graphics.draw(birds[i].sprites.up, birds[i].x, birds[i].y)
+      elseif birds[i].direction == 1 then
+        love.graphics.draw(birds[i].sprites.right, birds[i].x, birds[i].y)
+      elseif birds[i].direction == 2 then
+        love.graphics.draw(birds[i].sprites.down, birds[i].x, birds[i].y)
+      elseif birds[i].direction == 3 then
+        love.graphics.draw(birds[i].sprites.left, birds[i].x, birds[i].y)
+      end
     end
 
     if alarm.triggered == true then
-      love.graphics.draw(alarm.sprite, bird.x + 8, bird.y - 40)
+      for i=1, birdCount, 1 do
+        love.graphics.draw(alarm.sprite, birds[i].x + 8, birds[i].y - 40)
+      end
     end
   end
 
@@ -97,6 +104,8 @@ function love.update(dt)
   end
 
   if state == 1 then
+    spawnTimer(dt)
+
     playerMove(dt)
 
     birdWatch()
@@ -105,14 +114,12 @@ function love.update(dt)
 
     birdKill()
 
-    spawned(dt)
-
     alarmed(dt)
   end
 
   if state == 2 then
     if love.keyboard.isDown(" ") then
-      restart()
+      restart(dt)
     end
   end
 end
@@ -136,67 +143,103 @@ function birdTurn(dt)
     return
   end
 
-  bird.time = bird.time + dt
 
-  if bird.time > 2 then
-    bird.time = 0
-    bird.direction = love.math.random(0,3)
+  for i=1, birdCount, 1 do
+    birds[i].time = birds[i].time + dt
+
+    if birds[i].time > 2 then
+      birds[i].time = 0
+      birds[i].direction = love.math.random(0,3)
+    end
   end
 end
 
 function birdWatch()
-  if bird.killed == true then
-    return
-  end
-
-  if love.keyboard.isDown("up", "right", "down", "left") then
-    -- Looking up
-    if bird.direction == 0 and player.y + 60 < bird.y then
-      alarm.triggered = true
+  for i=1, birdCount, 1 do
+    if birds[i].killed == true then
+      return
     end
 
-    -- Looking right
-    if bird.direction == 1 and player.x - 60 > bird.x then
-      alarm.triggered = true
-    end
+    if love.keyboard.isDown("up", "right", "down", "left") then
+      -- Looking up
+      if birds[i].direction == 0 and player.y + 60 < birds[i].y then
+        alarm.triggered = true
+      end
 
-    -- Looking down
-    if bird.direction == 2 and player.y - 60 > bird.y then
-      alarm.triggered = true
-    end
+      -- Looking right
+      if birds[i].direction == 1 and player.x - 60 > birds[i].x then
+        alarm.triggered = true
+      end
 
-    -- Looking left
-    if bird.direction == 3 and player.x + 60 < bird.x then
-      alarm.triggered = true
+      -- Looking down
+      if birds[i].direction == 2 and player.y - 60 > birds[i].y then
+        alarm.triggered = true
+      end
+
+      -- Looking left
+      if birds[i].direction == 3 and player.x + 60 < birds[i].x then
+        alarm.triggered = true
+      end
     end
   end
 end
 
 function birdKill()
-  if player.x >= bird.x - 32 and player.x <= bird.x + 32  then
-    if player.y >= bird.y - 32 and player.y <= bird.y + 56  then
-      bird.killed = true
-      addMeal()
+  for i=1, birdCount, 1 do
+    if player.x >= birds[i].x - 32 and player.x <= birds[i].x + 32  then
+      if player.y >= birds[i].y - 32 and player.y <= birds[i].y + 56  then
+        birds[i].killed = true
+        addMeal(i)
+      end
     end
   end
 end
 
-function addMeal()
-  bird.x = 200000
+function addMeal(i)
+  birds[i].x = 200000
   player.meals = player.meals + 1
   spawn.triggered = true
 end
 
-function spawned(dt)
+function spawnTimer(dt)
   if spawn.triggered == true then
     spawn.timer = spawn.timer + dt
     if spawn.timer >= 3 then
-      spawn.triggered = false
-      spawn.timer = 0
-      bird.x = love.math.random(100, love.graphics.getWidth() - 100)
-      bird.y = love.math.random(100, love.graphics.getHeight() - 100)
-      bird.killed = false
+      -- spawn.triggered = false
+      -- spawn.timer = 0
+      -- bird.x = love.math.random(100, love.graphics.getWidth() - 100)
+      -- bird.y = love.math.random(100, love.graphics.getHeight() - 100)
+      -- bird.killed = false
+      spawner()
     end
+  end
+end
+
+function spawner()
+  spawn.triggered = false
+  spawn.timer = 0
+
+  for i=1, birdCount, 1 do
+    birds[i] = {
+      sprites = {
+        up = love.graphics.newImage("bird-up.png"),
+        down = love.graphics.newImage("bird-down.png"),
+        left = love.graphics.newImage("bird-left.png"),
+        right = love.graphics.newImage("bird-right.png")
+      },
+      x = love.math.random(100, love.graphics.getWidth() - 100),
+      y = love.math.random(100, love.graphics.getHeight() - 100),
+      time = 0,
+      killed = false,
+
+      -- Where the bird is facing
+      -- Directions:
+      -- 0 = top
+      -- 1 = right
+      -- 2 = bottom
+      -- 3 = left
+      direction = love.math.random(0, 3)
+    }
   end
 end
 
@@ -210,19 +253,23 @@ function alarmed(dt)
 end
 
 function lose()
-  bird.x = 200000
   state = 2
 end
 
-function restart()
+function restart(dt)
   player.meals = 0
   player.speed = 200
 
   alarm.triggered = false
   alarm.timer = 0
 
-  bird.x = love.math.random(100, love.graphics.getWidth() - 100)
-  bird.y = love.math.random(100, love.graphics.getHeight() - 100)
+  birdCount = 1
+  birds = {}
+
+  spawn.triggered = true
+  spawn.timer = 3
+
+  spawnTimer(dt)
 
   state = 1
 end
