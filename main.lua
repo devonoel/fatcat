@@ -26,6 +26,13 @@ function love.load()
     direction = 0
   }
 
+  alarm = {
+    sprite = love.graphics.newImage("alarm.png"),
+    triggered = false,
+    timer = 0
+  }
+
+
   font = love.graphics.newFont(36)
 end
 
@@ -47,6 +54,10 @@ function love.draw()
   elseif bird.direction == 3 then
     love.graphics.draw(bird.sprites.left, bird.x, bird.y)
   end
+
+  if alarm.triggered == true then
+    love.graphics.draw(alarm.sprite, bird.x + 8, bird.y - 40)
+  end
 end
 
 function love.update(dt)
@@ -67,9 +78,15 @@ function love.update(dt)
   birdTurn(dt)
 
   birdKill()
+
+  alarmed(dt)
 end
 
 function birdTurn(dt)
+  if alarm.triggered == true then
+    return
+  end
+
   bird.time = bird.time + dt
 
   if bird.time > 2 then
@@ -82,22 +99,22 @@ function birdWatch()
   if love.keyboard.isDown("up", "right", "down", "left") then
     -- Looking up
     if bird.direction == 0 and player.y - 50 < bird.y then
-      lose()
+      alarm.triggered = true
     end
 
     -- Looking right
     if bird.direction == 1 and player.x + 50 > bird.x then
-      lose()
+      alarm.triggered = true
     end
 
     -- Looking down
     if bird.direction == 2 and player.y + 50 > bird.y then
-      lose()
+      alarm.triggered = true
     end
 
     -- Looking left
     if bird.direction == 3 and player.x - 50 < bird.x then
-      lose()
+      alarm.triggered = true
     end
   end
 end
@@ -113,6 +130,15 @@ end
 function score()
   bird.x = 200000
   player.points = player.points + 1
+end
+
+function alarmed(dt)
+  if alarm.triggered == true then
+    alarm.timer = alarm.timer + dt
+    if alarm.timer >= 1 then
+      lose()
+    end
+  end
 end
 
 function lose()
