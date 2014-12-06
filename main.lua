@@ -16,6 +16,12 @@ function love.load()
   }
 
   birdCount = 0
+  vision = {
+    minForward = 60,
+    maxForward = 250,
+    minSide = 30,
+    maxSide = 100
+  }
   birds = {}
 
   spawn = {
@@ -166,25 +172,70 @@ function birdWatch()
 
     if love.keyboard.isDown("up", "right", "down", "left") then
       -- Looking up
-      if birds[i].direction == 0 and player.y < birds[i].y - 60 and player.y > birds[i].y - 250 then
-        alarm.triggered = true
+      if birds[i].direction == 0 then
+        if checkFront(0, "y", i) then
+          alarm.triggered = true
+          -- if player.x < birds[i].x - vision.maxSide and player.x > birds[i].x - vision.minSide then
+          --   alarm.triggered = true
+          -- elseif player.x > birds[i].x + vision.maxSide and player.x < birds[i].x + vision.minSide then
+          --   alarm.triggered = true
+          -- end
+        end
       end
 
       -- Looking right
-      if birds[i].direction == 1 and player.x > birds[i].x + 60 and player.x < birds[i].x + 250 then
-        alarm.triggered = true
+      if birds[i].direction == 1 then
+        if checkFront(1, "x", i) then
+          alarm.triggered = true
+          -- if player.y < birds[i].y + vision.maxSide and player.y > birds[i].y + vision.minSide then
+          --   alarm.triggered = true
+          -- elseif player.y > birds[i].y - vision.maxSide and player.y < birds[i].y - vision.minSide then
+          --   alarm.triggered = true
+          -- end
+        end
       end
 
       -- Looking down
-      if birds[i].direction == 2 and player.y > birds[i].y + 60 and player.y < birds[i].y + 250 then
-        alarm.triggered = true
+      if birds[i].direction == 2 then
+        if checkFront(1, "y", i) then
+          alarm.triggered = true
+          -- if player.x < birds[i].x + vision.maxSide and player.x > birds[i].x + vision.minSide then
+          --   alarm.triggered = true
+          -- elseif player.x > birds[i].x - vision.maxSide and player.x < birds[i].x - vision.minSide then
+          --   alarm.triggered = true
+          -- end
+        end
       end
 
       -- Looking left
-      if birds[i].direction == 3 and player.x < birds[i].x - 60 and player.x > birds[i].x - 250 then
-        alarm.triggered = true
+      if birds[i].direction == 3 then
+        if checkFront(0, "x", i) then
+          alarm.triggered = true
+          -- if player.y < birds[i].y - vision.maxSide and player.y > birds[i].y - vision.minSide then
+          --   alarm.triggered = true
+          -- elseif player.y > birds[i].y + vision.maxSide and player.y < birds[i].y + vision.minSide then
+          --   alarm.triggered = true
+          -- end
+        end
       end
     end
+  end
+end
+
+-- Vision check at the birds front
+-- sign:
+  -- 0 indicates moving towards 0
+  -- 1 indicates moving towards infinity
+-- axis:
+  -- x
+  -- y
+-- i:
+  -- index of the bird in the bird table
+function checkFront(sign, axis, i)
+  if sign == 0 then
+    return player[axis] < birds[i][axis] - vision.minForward and player[axis] > birds[i][axis] - vision.maxForward
+  elseif sign == 1 then
+    return player[axis] > birds[i][axis] + vision.minForward and player[axis] < birds[i][axis] + vision.maxForward
   end
 end
 
@@ -207,7 +258,7 @@ end
 function birdCollision()
   for i=1, birdCount, 1 do
     if player.x >= birds[i].x - player.width and player.x <= birds[i].x + player.width  then
-      if player.y >= birds[i].y - player.height and player.y <= birds[i].y + player.height + 12 then
+      if player.y >= birds[i].y - player.height and player.y <= birds[i].y + player.height + 16 then
         birds[i].killed = true
         addMeal(i)
       end
