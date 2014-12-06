@@ -98,22 +98,22 @@ end
 function birdWatch()
   if love.keyboard.isDown("up", "right", "down", "left") then
     -- Looking up
-    if bird.direction == 0 and player.y - 50 < bird.y then
+    if bird.direction == 0 and player.y + 60 < bird.y then
       alarm.triggered = true
     end
 
     -- Looking right
-    if bird.direction == 1 and player.x + 50 > bird.x then
+    if bird.direction == 1 and player.x - 60 > bird.x then
       alarm.triggered = true
     end
 
     -- Looking down
-    if bird.direction == 2 and player.y + 50 > bird.y then
+    if bird.direction == 2 and player.y - 60 > bird.y then
       alarm.triggered = true
     end
 
     -- Looking left
-    if bird.direction == 3 and player.x - 50 < bird.x then
+    if bird.direction == 3 and player.x + 60 < bird.x then
       alarm.triggered = true
     end
   end
