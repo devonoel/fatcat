@@ -17,10 +17,10 @@ function love.load()
 
   birdCount = 0
   vision = {
-    minForward = 60,
-    maxForward = 250,
-    minSide = 30,
-    maxSide = 100
+    minForward = 50,
+    maxForward = 275,
+    minSide = 0,
+    maxSide = 200
   }
   birds = {}
 
@@ -174,48 +174,44 @@ function birdWatch()
       -- Looking up
       if birds[i].direction == 0 then
         if checkFront(0, "y", i) then
-          alarm.triggered = true
-          -- if player.x < birds[i].x - vision.maxSide and player.x > birds[i].x - vision.minSide then
-          --   alarm.triggered = true
-          -- elseif player.x > birds[i].x + vision.maxSide and player.x < birds[i].x + vision.minSide then
-          --   alarm.triggered = true
-          -- end
+          if checkSide(0, "x", i) then
+            alarm.triggered = true
+          elseif checkSide(1, "x", i) then
+            alarm.triggered = true
+          end
         end
       end
 
       -- Looking right
       if birds[i].direction == 1 then
         if checkFront(1, "x", i) then
-          alarm.triggered = true
-          -- if player.y < birds[i].y + vision.maxSide and player.y > birds[i].y + vision.minSide then
-          --   alarm.triggered = true
-          -- elseif player.y > birds[i].y - vision.maxSide and player.y < birds[i].y - vision.minSide then
-          --   alarm.triggered = true
-          -- end
+          if checkSide(0, "y", i) then
+            alarm.triggered = true
+          elseif checkSide(1, "y", i) then
+            alarm.triggered = true
+          end
         end
       end
 
       -- Looking down
       if birds[i].direction == 2 then
         if checkFront(1, "y", i) then
-          alarm.triggered = true
-          -- if player.x < birds[i].x + vision.maxSide and player.x > birds[i].x + vision.minSide then
-          --   alarm.triggered = true
-          -- elseif player.x > birds[i].x - vision.maxSide and player.x < birds[i].x - vision.minSide then
-          --   alarm.triggered = true
-          -- end
+          if checkSide(0, "x", i) then
+            alarm.triggered = true
+          elseif checkSide(1, "x", i) then
+            alarm.triggered = true
+          end
         end
       end
 
       -- Looking left
       if birds[i].direction == 3 then
         if checkFront(0, "x", i) then
-          alarm.triggered = true
-          -- if player.y < birds[i].y - vision.maxSide and player.y > birds[i].y - vision.minSide then
-          --   alarm.triggered = true
-          -- elseif player.y > birds[i].y + vision.maxSide and player.y < birds[i].y + vision.minSide then
-          --   alarm.triggered = true
-          -- end
+          if checkSide(0, "y", i) then
+            alarm.triggered = true
+          elseif checkSide(1, "y", i) then
+            alarm.triggered = true
+          end
         end
       end
     end
@@ -236,6 +232,23 @@ function checkFront(sign, axis, i)
     return player[axis] < birds[i][axis] - vision.minForward and player[axis] > birds[i][axis] - vision.maxForward
   elseif sign == 1 then
     return player[axis] > birds[i][axis] + vision.minForward and player[axis] < birds[i][axis] + vision.maxForward
+  end
+end
+
+-- Vision check at the birds sides
+-- side:
+  -- 0 indicates moving towards 0
+  -- 1 indicates moving towards infinity
+-- axis:
+  -- x
+  -- y
+-- i:
+  -- index of the bird in the bird table
+function checkSide(sign, axis, i)
+  if sign == 0 then
+    return player[axis] < birds[i][axis] - vision.minSide and player[axis] > birds[i][axis] - vision.maxSide
+  elseif sign == 1 then
+    return player[axis] > birds[i][axis] + vision.minSide and player[axis] < birds[i][axis] + vision.maxSide
   end
 end
 
@@ -270,9 +283,13 @@ function addMeal(i)
   birds[i].x = 200000
   player.meals = player.meals + 1
   player.killCountdown = player.killCountdown + 1
-  player.width = player.width + 5
-  player.height = player.height + 5
-  player.speed = player.speed - 10
+  if player.width < 150 then
+    player.width = player.width + 5
+    player.height = player.height + 5
+  end
+  if player.speed > 50 then
+    player.speed = player.speed - 5
+  end
   if birdCount - player.killCountdown == 0 then
     player.killCountdown = 0
     spawn.triggered = true
