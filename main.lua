@@ -112,7 +112,9 @@ function love.load()
 
   -- Fonts
   titleFont = love.graphics.newFont("Montserrat-Bold.ttf", 150)
-  instructionFont = love.graphics.newFont("Montserrat-Bold.ttf", 36)
+  startFont = love.graphics.newFont("Montserrat-Bold.ttf", 36)
+  arrowFont = love.graphics.newFont("Montserrat-Bold.ttf", 28)
+  instructionFont = love.graphics.newFont("Montserrat-Bold.ttf", 26)
   mealsFont = love.graphics.newFont("Montserrat-Bold.ttf", 40)
   caughtFont = love.graphics.newFont("Montserrat-Bold.ttf", 120)
   lossFont = love.graphics.newFont("Montserrat-Bold.ttf", 40)
@@ -126,8 +128,16 @@ function love.draw()
     love.graphics.setColor(80,80,90)
     love.graphics.setFont(titleFont)
     love.graphics.print("FatCat", love.graphics.getWidth()/4 + 50, love.graphics.getHeight()/3 - 100)
-    love.graphics.setFont(instructionFont)
+
+    love.graphics.setFont(startFont)
     love.graphics.print("Press Space to Start", love.graphics.getWidth()/3 + 10, love.graphics.getHeight()/2)
+    love.graphics.setFont(arrowFont)
+    love.graphics.print("Arrow Keys to Move, Shift to Run", love.graphics.getWidth()/4 + 60, love.graphics.getHeight()/2 + 50)
+
+    love.graphics.setFont(instructionFont)
+    love.graphics.print("Sneak up on birds, eat 'em up, get fat", love.graphics.getWidth()/4 + 50, love.graphics.getHeight()/2 + 130)
+    love.graphics.print("The fatter you are, the slower you move", love.graphics.getWidth()/4 + 40, love.graphics.getHeight()/2 + 170)
+
     love.graphics.setColor(r,g,b,a)
   end
 
@@ -169,7 +179,7 @@ function love.draw()
     -- Alarm indicators
     if alarm.triggered == true then
       for i=1, birdCount, 1 do
-        love.graphics.draw(alarm.sprite, birds[i].x + 8, birds[i].y - 40)
+        love.graphics.draw(alarm.sprite, birds[i].x + 6, birds[i].y - 40)
       end
     end
   end
