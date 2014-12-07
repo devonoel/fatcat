@@ -6,12 +6,18 @@ function love.load()
   state = 0
 
   player = {
+    sprites = {
+      up = love.graphics.newImage("cat-up.png"),
+      down = love.graphics.newImage("cat-down.png"),
+      left = love.graphics.newImage("cat-left.png"),
+      right = love.graphics.newImage("cat-right.png")
+    },
+    direction = 1,
     meals = 0,
     killCountdown = 0,
+    fatness = 0.2,
     x = 256,
     y = 256,
-    width = 32,
-    height = 32,
     speed = 200
   }
 
@@ -79,8 +85,9 @@ function love.draw()
     end
 
     -- Player
-    love.graphics.rectangle("fill", player.x, player.y, player.width, player.height)
+    love.graphics.draw(playerSprite(), player.x, player.y, 0, player.fatness, player.fatness)
 
+    -- Alarm indicators
     if alarm.triggered == true then
       for i=1, birdCount, 1 do
         love.graphics.draw(alarm.sprite, birds[i].x + 8, birds[i].y - 40)
@@ -169,14 +176,18 @@ end
 
 function playerMove(dt)
   if love.keyboard.isDown("left") then
+    player.direction = 3
     player.x = player.x - (player.speed * dt)
   elseif love.keyboard.isDown("right") then
+    player.direction = 1
     player.x = player.x + (player.speed * dt)
   end
 
   if love.keyboard.isDown("up") then
+    player.direction = 0
     player.y = player.y - (player.speed * dt)
   elseif love.keyboard.isDown("down") then
+    player.direction = 2
     player.y = player.y + (player.speed * dt)
   end
 end
@@ -184,14 +195,14 @@ end
 function wallCollision()
   if player.x < 0 then
     player.x = 0
-  elseif player.x > love.graphics.getWidth() - player.width then
-    player.x = love.graphics.getWidth() - player.width
+  elseif player.x > love.graphics.getWidth() - playerWidth() then
+    player.x = love.graphics.getWidth() - playerWidth()
   end
 
   if player.y < 0 then
     player.y = 0
-  elseif player.y > love.graphics.getHeight() - player.height then
-    player.y = love.graphics.getHeight()  - player.height
+  elseif player.y > love.graphics.getHeight() - playerHeight() then
+    player.y = love.graphics.getHeight()  - playerHeight()
   end
 end
 
@@ -304,8 +315,8 @@ function birdCollision()
     birdWidth = birds[i].sprites.up:getWidth()
     birdHeight = birds[i].sprites.up:getHeight()
 
-    if player.x <= birds[i].x + birdWidth and player.x + player.width >= birds[i].x then
-      if player.y <= birds[i].y + birdHeight and player.y + player.height >= birds[i].y then
+    if player.x <= birds[i].x + birdWidth and player.x + playerWidth() >= birds[i].x then
+      if player.y <= birds[i].y + birdHeight and player.y + playerHeight() >= birds[i].y then
         birds[i].killed = true
         addMeal(i)
       end
@@ -319,9 +330,8 @@ function addMeal(i)
   deathSound:play()
   player.meals = player.meals + 1
   player.killCountdown = player.killCountdown + 1
-  if player.width < 150 then
-    player.width = player.width + 5
-    player.height = player.height + 5
+  if player.fatness < 1 then
+    player.fatness = player.fatness + 0.05
   end
   if player.speed > 50 then
     player.speed = player.speed - 5
@@ -350,9 +360,8 @@ end
 function restart(dt)
   player.meals = 0
   player.speed = 200
-  player.width = 32
-  player.height = 32
   player.killCountdown = 0
+  player.fatness = 0.2
 
   alarm.triggered = false
   alarm.timer = 0
@@ -366,4 +375,24 @@ function restart(dt)
   spawnCountdown(dt)
 
   state = 1
+end
+
+function playerSprite()
+  if player.direction == 0 then
+    return player.sprites.up
+  elseif player.direction == 1 then
+    return player.sprites.right
+  elseif player.direction == 2 then
+    return player.sprites.down
+  elseif player.direction == 3 then
+    return player.sprites.left
+  end
+end
+
+function playerWidth()
+  return playerSprite():getWidth() * player.fatness
+end
+
+function playerHeight()
+  return playerSprite():getHeight() * player.fatness
 end
