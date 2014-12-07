@@ -35,23 +35,31 @@ function love.load()
     timer = 0
   }
 
-  startFont = love.graphics.newFont(64)
-  mealsFont = love.graphics.newFont(36)
-  lossFont = love.graphics.newFont(64)
+  titleFont = love.graphics.newFont("Montserrat-Bold.ttf", 150)
+  instructionFont = love.graphics.newFont("Montserrat-Bold.ttf", 36)
+  mealsFont = love.graphics.newFont("Montserrat-Bold.ttf", 40)
+  caughtFont = love.graphics.newFont("Montserrat-Bold.ttf", 120)
+  lossFont = love.graphics.newFont("Montserrat-Bold.ttf", 40)
 end
 
 function love.draw()
   love.graphics.setBackgroundColor(125, 189, 131)
+  r,g,b,a = love.graphics.getColor()
 
   if state == 0 then
-    love.graphics.setFont(startFont)
-    love.graphics.print("FatCat", love.graphics.getWidth()/3 + 75, love.graphics.getHeight()/2 - 150)
-    love.graphics.print("Press Space to Start", love.graphics.getWidth()/4, love.graphics.getHeight()/2 - 50)
+    love.graphics.setColor(80,80,90)
+    love.graphics.setFont(titleFont)
+    love.graphics.print("FatCat", love.graphics.getWidth()/4 + 50, love.graphics.getHeight()/3 - 100)
+    love.graphics.setFont(instructionFont)
+    love.graphics.print("Press Space to Start", love.graphics.getWidth()/3 + 10, love.graphics.getHeight()/2)
+    love.graphics.setColor(r,g,b,a)
   end
 
   if state == 1 then
+    love.graphics.setColor(163,227,169)
     love.graphics.setFont(mealsFont)
-    love.graphics.print("Meals: "..player.meals, 50, 730)
+    love.graphics.print("Snacks: "..player.meals, 50, 710)
+    love.graphics.setColor(r,g,b,a)
 
     -- Birds
     for i=1, birdCount, 1 do
@@ -77,10 +85,13 @@ function love.draw()
   end
 
   if state == 2 then
+    love.graphics.setColor(80,80,90)
+    love.graphics.setFont(caughtFont)
+    love.graphics.print("Caught :(", love.graphics.getWidth()/4 + 10, love.graphics.getHeight()/2 - 150)
     love.graphics.setFont(lossFont)
-    love.graphics.print("No more meals :(", love.graphics.getWidth()/4, love.graphics.getHeight()/2 - 150)
-    love.graphics.print("Total meals: "..player.meals, love.graphics.getWidth()/4, love.graphics.getHeight()/2 - 50)
-    love.graphics.print("Press Space to Restart", love.graphics.getWidth()/4, love.graphics.getHeight()/2 + 50)
+    love.graphics.print("Total snacks: "..player.meals, love.graphics.getWidth()/4 + 140, love.graphics.getHeight()/2 + 60)
+    love.graphics.print("Press Space to Restart", love.graphics.getWidth()/4 + 60, love.graphics.getHeight()/2 + 130)
+    love.graphics.setColor(r,g,b,a)
   end
 end
 
