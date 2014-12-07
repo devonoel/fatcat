@@ -286,8 +286,11 @@ end
 
 function birdCollision()
   for i=1, birdCount, 1 do
-    if player.x >= birds[i].x - player.width and player.x <= birds[i].x + player.width  then
-      if player.y >= birds[i].y - player.height and player.y <= birds[i].y + player.height + 16 then
+    birdWidth = birds[i].sprites.up:getWidth()
+    birdHeight = birds[i].sprites.up:getHeight()
+
+    if player.x <= birds[i].x + birdWidth and player.x + player.width >= birds[i].x then
+      if player.y <= birds[i].y + birdHeight and player.y + player.height >= birds[i].y then
         birds[i].killed = true
         addMeal(i)
       end
