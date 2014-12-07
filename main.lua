@@ -41,6 +41,62 @@ function love.load()
     timer = 0
   }
 
+  boulders = {
+    sprite = love.graphics.newImage("boulder.png"),
+    positions = {
+      {
+        x = love.math.random(150, love.graphics.getWidth() - 150),
+        y = love.math.random(150, love.graphics.getHeight() - 150)
+      },
+      {
+        x = love.math.random(150, love.graphics.getWidth() - 150),
+        y = love.math.random(150, love.graphics.getHeight() - 150)
+      },
+      {
+        x = love.math.random(150, love.graphics.getWidth() - 150),
+        y = love.math.random(150, love.graphics.getHeight() - 150)
+      }
+    }
+  }
+
+  grass = {
+    sprite = love.graphics.newImage("grass.png"),
+    positions = {
+      {
+        x = love.math.random(150, love.graphics.getWidth() - 150),
+        y = love.math.random(150, love.graphics.getHeight() - 150)
+      },
+      {
+        x = love.math.random(150, love.graphics.getWidth() - 150),
+        y = love.math.random(150, love.graphics.getHeight() - 150)
+      },
+      {
+        x = love.math.random(150, love.graphics.getWidth() - 150),
+        y = love.math.random(150, love.graphics.getHeight() - 150)
+      },
+      {
+        x = love.math.random(150, love.graphics.getWidth() - 150),
+        y = love.math.random(150, love.graphics.getHeight() - 150)
+      },
+      {
+        x = love.math.random(150, love.graphics.getWidth() - 150),
+        y = love.math.random(150, love.graphics.getHeight() - 150)
+      },
+      {
+        x = love.math.random(150, love.graphics.getWidth() - 150),
+        y = love.math.random(150, love.graphics.getHeight() - 150)
+      },
+      {
+        x = love.math.random(150, love.graphics.getWidth() - 150),
+        y = love.math.random(150, love.graphics.getHeight() - 150)
+      },
+      {
+        x = love.math.random(150, love.graphics.getWidth() - 150),
+        y = love.math.random(150, love.graphics.getHeight() - 150)
+      }
+    }
+  }
+
   -- Sounds
   deathSound = love.audio.newSource("death.wav", "static")
 
@@ -66,6 +122,19 @@ function love.draw()
   end
 
   if state == 1 then
+    love.graphics.draw(boulders.sprite, boulders.positions[1].x, boulders.positions[1].y)
+    love.graphics.draw(boulders.sprite, boulders.positions[2].x, boulders.positions[2].y)
+    love.graphics.draw(boulders.sprite, boulders.positions[3].x, boulders.positions[3].y)
+
+    love.graphics.draw(grass.sprite, grass.positions[1].x, grass.positions[1].y)
+    love.graphics.draw(grass.sprite, grass.positions[2].x, grass.positions[2].y)
+    love.graphics.draw(grass.sprite, grass.positions[3].x, grass.positions[3].y)
+    love.graphics.draw(grass.sprite, grass.positions[4].x, grass.positions[4].y)
+    love.graphics.draw(grass.sprite, grass.positions[5].x, grass.positions[5].y)
+    love.graphics.draw(grass.sprite, grass.positions[6].x, grass.positions[6].y)
+    love.graphics.draw(grass.sprite, grass.positions[7].x, grass.positions[7].y)
+    love.graphics.draw(grass.sprite, grass.positions[8].x, grass.positions[8].y)
+
     love.graphics.setColor(163,227,169)
     love.graphics.setFont(mealsFont)
     love.graphics.print("Snacks: "..player.meals, 50, 710)
