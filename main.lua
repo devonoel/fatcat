@@ -10,9 +10,19 @@ function love.load()
       up = love.graphics.newImage("cat-up.png"),
       down = love.graphics.newImage("cat-down.png"),
       left = love.graphics.newImage("cat-left.png"),
-      right = love.graphics.newImage("cat-right.png")
+      right = love.graphics.newImage("cat-right.png"),
+
+      -- Alt sprites for simple animation
+      upAlt = love.graphics.newImage("cat-up-alt.png"),
+      downAlt = love.graphics.newImage("cat-down-alt.png"),
+      leftAlt = love.graphics.newImage("cat-left-alt.png"),
+      rightAlt = love.graphics.newImage("cat-right-alt.png")
     },
     direction = 1,
+    moving = false,
+    aTimer = 0,
+    aRate = 0.3,
+    aSwitch = false,
     meals = 0,
     killCountdown = 0,
     fatness = 0.2,
@@ -187,6 +197,8 @@ function love.update(dt)
 
     playerMove(dt)
 
+    playerAnimateTimer(dt)
+
     wallCollision()
 
     birdWatch()
@@ -267,6 +279,12 @@ function playerMove(dt)
   elseif love.keyboard.isDown("down") then
     player.direction = 2
     player.y = player.y + (activeSpeed * dt)
+  end
+
+  if love.keyboard.isDown("up", "right", "down", "left") then
+    player.moving = true
+  else
+    player.moving = false
   end
 end
 
@@ -457,13 +475,17 @@ end
 
 function playerSprite()
   if player.direction == 0 then
-    return player.sprites.up
+    -- return player.sprites.up
+    return playerAnimateSwitch(player.sprites.up, player.sprites.upAlt)
   elseif player.direction == 1 then
-    return player.sprites.right
+    -- return player.sprites.right
+    return playerAnimateSwitch(player.sprites.right, player.sprites.rightAlt)
   elseif player.direction == 2 then
-    return player.sprites.down
+    -- return player.sprites.down
+    return playerAnimateSwitch(player.sprites.down, player.sprites.downAlt)
   elseif player.direction == 3 then
-    return player.sprites.left
+    -- return player.sprites.left
+    return playerAnimateSwitch(player.sprites.left, player.sprites.leftAlt)
   end
 end
 
@@ -473,4 +495,22 @@ end
 
 function playerHeight()
   return playerSprite():getHeight() * player.fatness
+end
+
+function playerAnimateTimer(dt)
+  if player.moving == true then
+    player.aTimer = player.aTimer + dt
+    if player.aTimer >= player.aRate then
+      player.aTimer = 0
+      player.aSwitch = not player.aSwitch
+    end
+  end
+end
+
+function playerAnimateSwitch(s1, s2)
+  if player.aSwitch == true then
+    return s1
+  else
+    return s2
+  end
 end
