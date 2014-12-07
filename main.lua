@@ -35,6 +35,10 @@ function love.load()
     timer = 0
   }
 
+  -- Sounds
+  deathSound = love.audio.newSource("death.wav", "static")
+
+  -- Fonts
   titleFont = love.graphics.newFont("Montserrat-Bold.ttf", 150)
   instructionFont = love.graphics.newFont("Montserrat-Bold.ttf", 36)
   mealsFont = love.graphics.newFont("Montserrat-Bold.ttf", 40)
@@ -311,6 +315,7 @@ end
 
 function addMeal(i)
   birds[i].x = 200000
+  deathSound:play()
   player.meals = player.meals + 1
   player.killCountdown = player.killCountdown + 1
   if player.width < 150 then
