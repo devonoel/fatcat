@@ -207,6 +207,8 @@ end
 
 function spawnCountdown(dt)
   if spawn.triggered == true then
+    alarm.triggered = false
+    alarm.timer = 0
     spawn.timer = spawn.timer + dt
     if spawn.timer >= 2 then
       birds = {}
@@ -244,20 +246,27 @@ function spawner()
 end
 
 function playerMove(dt)
+  if love.keyboard.isDown("rshift", "lshift") then
+    activeSpeed = player.speed * 3
+    alarm.triggered = true
+  else
+    activeSpeed = player.speed
+  end
+
   if love.keyboard.isDown("left") then
     player.direction = 3
-    player.x = player.x - (player.speed * dt)
+    player.x = player.x - (activeSpeed * dt)
   elseif love.keyboard.isDown("right") then
     player.direction = 1
-    player.x = player.x + (player.speed * dt)
+    player.x = player.x + (activeSpeed * dt)
   end
 
   if love.keyboard.isDown("up") then
     player.direction = 0
-    player.y = player.y - (player.speed * dt)
+    player.y = player.y - (activeSpeed * dt)
   elseif love.keyboard.isDown("down") then
     player.direction = 2
-    player.y = player.y + (player.speed * dt)
+    player.y = player.y + (activeSpeed * dt)
   end
 end
 
