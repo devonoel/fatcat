@@ -17,8 +17,8 @@ function love.load()
 
   birdCount = 0
   vision = {
-    minForward = 50,
-    maxForward = 275,
+    minForward = 40,
+    maxForward = 300,
     minSide = 0,
     maxSide = 200
   }
@@ -135,22 +135,22 @@ function spawner()
         down = love.graphics.newImage("bird-down.png"),
         left = love.graphics.newImage("bird-left.png"),
         right = love.graphics.newImage("bird-right.png")
-        },
-        x = love.math.random(100, love.graphics.getWidth() - 100),
-        y = love.math.random(100, love.graphics.getHeight() - 100),
-        time = 0,
-        killed = false,
+      },
+      x = love.math.random(100, love.graphics.getWidth() - 100),
+      y = love.math.random(100, love.graphics.getHeight() - 100),
+      time = 0,
+      killed = false,
 
-        -- Where the bird is facing
-        -- Directions:
-        -- 0 = top
-        -- 1 = right
-        -- 2 = bottom
-        -- 3 = left
-        direction = love.math.random(0, 3)
-      }
-    end
+      -- Where the bird is facing
+      -- Directions:
+      -- 0 = top
+      -- 1 = right
+      -- 2 = bottom
+      -- 3 = left
+      direction = love.math.random(0, 3)
+    }
   end
+end
 
 function playerMove(dt)
   if love.keyboard.isDown("left") then
