@@ -315,6 +315,7 @@ end
 
 function addMeal(i)
   birds[i].x = 200000
+  deathSound:stop()
   deathSound:play()
   player.meals = player.meals + 1
   player.killCountdown = player.killCountdown + 1
