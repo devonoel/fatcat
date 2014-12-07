@@ -96,6 +96,8 @@ function love.update(dt)
 
     playerMove(dt)
 
+    wallCollision()
+
     birdWatch()
 
     birdTurn(dt)
@@ -161,6 +163,20 @@ function playerMove(dt)
     player.y = player.y - (player.speed * dt)
   elseif love.keyboard.isDown("down") then
     player.y = player.y + (player.speed * dt)
+  end
+end
+
+function wallCollision()
+  if player.x < 0 then
+    player.x = 0
+  elseif player.x > love.graphics.getWidth() - player.width then
+    player.x = love.graphics.getWidth() - player.width
+  end
+
+  if player.y < 0 then
+    player.y = 0
+  elseif player.y > love.graphics.getHeight() - player.height then
+    player.y = love.graphics.getHeight()  - player.height
   end
 end
 
@@ -261,7 +277,7 @@ function birdTurn(dt)
   for i=1, birdCount, 1 do
     birds[i].time = birds[i].time + dt
 
-    if birds[i].time > 4 then
+    if birds[i].time > 3 then
       birds[i].time = 0
       birds[i].direction = love.math.random(0,3)
     end
