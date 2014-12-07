@@ -18,7 +18,7 @@ function love.load()
     fatness = 0.2,
     x = 256,
     y = 256,
-    speed = 200
+    speed = 250
   }
 
   birdCount = 0
