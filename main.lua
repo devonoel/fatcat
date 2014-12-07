@@ -291,6 +291,8 @@ function addMeal(i)
     player.speed = player.speed - 5
   end
   if birdCount - player.killCountdown == 0 then
+    alarm.triggered = false
+    alarm.timer = 0
     player.killCountdown = 0
     spawn.triggered = true
   end
